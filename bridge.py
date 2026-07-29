@@ -136,8 +136,13 @@ class Bridge:
             print(f"Failed to persist MQTT payload: {exc}")
 
     def run(self) -> None:
-        self.client.connect(self.mqtt_host, self.mqtt_port, keepalive=60)
-        self.client.loop_forever()
+        while True:
+            try:
+                self.client.connect(self.mqtt_host, self.mqtt_port, keepalive=60)
+                self.client.loop_forever()
+            except Exception as exc:
+                print(f"MQTT unavailable, retrying: {exc}")
+                time.sleep(3)
 
 
 def main() -> None:
